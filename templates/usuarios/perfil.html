@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <!-- barra de navegação -->
+  {% include 'partials/_menu.html' %}
+  <!-- barra de navegação -->
+
+  <!-- main forms-->
+  <main class="container main-forms-perfil d-flex wrap justify-content-between">
+      <!-- card foto e nome -->
+      <div class="card mt-2" style="width:18rem; height:25rem;">
+        {% if profiles %}
+          {% for profile in profiles %}
+              {% if profile.foto_perfil == '' %}
+                <img src="{% static 'imgs/practia_logo.png' %}" class="card-img-top" alt="foto-perfil" width="100px" height="">
+              {% else %}
+                  <img src="{{ profile.foto_perfil.url }}"  class="card-img-top"  alt="foto-perfil" width="100px" height="320px">
+              {% endif %}
+          {% endfor %}
+      {% else %}
+          <img src="{% static 'imgs/practia_logo.png' %}" class="card-img-top" alt="foto-perfil" width="100px" height="">
+      {% endif %}
+        <hr class="limitador">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ user.username }}</h5>
+          </div>
+      </div>
+      <!-- card foto e nome -->
+
+      <!-- formulario -->
+      <!-- fprmulario usuarios -->
+      <div class="forms-usuario-dados">
+          <h4 class="usuario-dados-user-perfil">Suas Informações</h4>
+          {% include 'partials/_alertas.html' %}
+          <hr>
+          <form action="{% url 'atualiza_perfil' %}" method="POST" class="row g-3" enctype="multipart/form-data">
+            {% csrf_token %}
+              <input type="text" id="user_id" class="form-control" name="user_id" value="{{user.id}}" hidden>
+              {% if profiles %}
+                {% for profile in profiles %}
+                  <input type="text" id="profile_id" class="form-control" name="profile_id" value="{{profile.id}}" hidden>
+                {% endfor %}
+              {% endif %}
+              <div class="col-md-6">
+                  <label for="inputNome" class="form-label">Nome</label>
+                  <input type="text" class="form-control" name="username_nome" id="inputNome" value="{{ user.username }}" placeholder="Nome">
+                </div>
+              
+              <div class="col-md-6">
+                <label for="inputEmail4" class="form-label">Email</label>
+                {% if user.is_superuser %}
+                  <input type="email" class="form-control" id="inputEmail" value="{{ user.email }}" name="email" placeholder="emailexemple@outlook.com">
+                {% else %}
+                  <input type="email" class="form-control" id="inputEmail" value="{{ user.email }}" name="email" placeholder="emailexemple@outlook.com" disabled>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Senha</label>
+                  <input type="password" class="form-control" value="{{ user.password }}" id="inputPassword4" disabled>
+              </div>
+              <div class="col-6">
+                  <label for="inputOrganizacao" class="form-label">Nome da Organização</label>
+                  {% for profile in profiles %}
+                    <input type="text" class="form-control" id="inputOrganizacao" name="nome_empresa" value="{{ profile.empresa }}" disabled placeholder="">
+                  {% endfor %}
+              </div>
+              <div class="col-6">
+                  <label for="inputCargo" class="form-label">Cargo</label>
+                  {% for profile in profiles %}
+                    <input type="text" class="form-control" value="{{ profile.cargo }}" name="cargo" id="inputCargo" placeholder="">
+                  {% endfor %}
+              </div>
+              <div class="col-6">
+                <label for="inputAddress" class="form-label">Endereço</label>
+                {% for profile in profiles %}
+                  <input type="text" class="form-control" id="inputAddress" name="endereco" value="{{ profile.endereco }}" placeholder="Rua Principal 1234">
+                {% endfor %}
+              </div>
+              <div class="col-6">
+                <label for="inputtel" class="form-label">Telefone</label>
+                {% for profile in profiles %}
+                  <input type="tel" class="form-control" value="{{ profile.telefone }}" name="telefone" id="inputtel" placeholder="+55 (11) 99999-9999">
+                {% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label for="inputCity" class="form-label">Cidade</label>
+                {% for profile in profiles %}
+                  <input type="text" class="form-control" name="cidade" value="{{ profile.cidade }}" id="inputCity">
+                {% endfor %}
+              </div>
+              <div class="col-md-6">
+                  <div class="col-sm">
+                      <label for="inputCity" class="form-label">Estado</label>
+                    {% for profile in profiles %}
+                    <input type="text" class="form-control" name="estado" value="{{ profile.estado }}" placeholder="Estado" aria-label="State">
+                    {% endfor %}
+                  </div>
+              </div>
+              <div class="col-md-6">
+                <label for="file" class="form-label"><b>Adicionar nova foto</b></label>
+                <input type="file" class="form-control" name="foto_perfil">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Atualizar</button>
+            </div>
+            </div>
+            </form>
+      </div>
+      <!-- formulario usuarios -->
+      <!-- formulario -->
+  </main>
+  <!-- main forms-->
+        
+  {% include 'partials/_footer.html' %}
+
+{% endblock %}   

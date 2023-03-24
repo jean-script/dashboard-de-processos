@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- barra de navegação -->
+{% include 'partials/_menu.html' %}
+<!-- barra de navegação -->
+<style>
+
+    .contact-area {
+        margin: 10px 10px;
+    }
+    .figure img{
+        width: 400px;
+    }
+    
+</style>
+<div class="contact-area section-padding-0-80">
+    {% for empresa in empresas%}
+        <h1 class="">{{empresa.nome_empresa}}</h1>
+        <figure class="figure">
+            <img src="{{ empresa.foto_empresa.url }}"  class="figure-img img-fluid rounded" alt={{ empresa.nome_empresa }}>
+            <figcaption class="figure-caption">{{empresa.nome_empresa}}</figcaption>
+          </figure>
+        
+    {%endfor%}
+</div>
+
+
+{% include 'partials/_footer.html' %}
+
+{% endblock %}  

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- barra de navegação -->
+{% include 'partials/_menu.html' %}
+<!-- barra de navegação -->
+ 
+<!--descrição dos dados-->
+<main class="container  mt-5 ">
+    <div class="container ">
+        <div class="row justify-content-between wrap">
+            <div class="col-6  text-justify">
+                <h2 class="text-start">{{ processo.nome_processo }}</h2>
+                
+                <p>Data da publicação: {{ processo.data_publicacao }}</p>
+                <div class="descrição">
+                    <h3>Descrição do processo</h3>
+                    <p>{{ processo.descrisao }}</p>
+                </div>
+            </div>
+            <div class="col-4  text-end">
+                {% for profile in profiles %}
+                <p>Empresa: {{ profile.empresa }}</p>
+                <p>Estado: {{ profile.estado }}</p>
+                    {% if profile.is_admin %}
+                        <a href="{% url 'edita_processo' processo.id %}" type="button" class="btn btn-info">Editar</a>
+                        <a href="{% url 'deleta_processo' processo.id %}" type="button" class="btn btn-danger">Deletar</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        </div>
+      <div class="container ">
+        <h3>Logs do processo</h3>
+      </div>
+       <!-- estatistica tabela -->
+       <div class="item">
+
+        <div class="border">
+            <h5 class="estatisticas-title mt-2 p-1 align-text-bottom">Historico de tarefas</h5>
+
+            <hr class="limitador">
+            <div class="container-table">
+                {% if log_do_processo %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Quantidade de itens</th>
+                                <th scope="col">Número de transações</th>
+                                <th scope="col">Tempo de execução</th>
+                                <th scope="col">Empresa</th>
+                                <th scope="col">Responsavel</th>
+                                <th scope="col">Data</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scroll">
+                            {% for log in log_do_processo %}
+                                <tr>
+                                    <th scope="row" id="processo_id">{{ log.id }}</th>
+                                    <td id="processo_status"><a href="http://127.0.0.1:5500/Project/output/log.html" target="_blank">{{ log.transaction_status }}</a></td>
+                                    <td id="processo_transaction_item">{{ log.transaction_Item }}</td>
+                                    <td id="processo_transaction_item">{{ log.transaction_Number }}</td>
+                                    <td id="processo_tempo_execucao">{{ log.tempo_execucao }}</td>
+
+                                    <td>{{ processo.empresa }}</td>
+                                    <td>{{ processo.usuario }}</td>
+                                    <td>{{ log.data_execucao }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>Nenhum robô foi executado</p>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+    <!-- estatistica tabela -->
+</main>
+<!--descrição dos dados-->
+
+{% include 'partials/_footer.html' %}
+{% endblock %}
+        

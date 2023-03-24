@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/styleLogin.css' %}">
+    
+<div id="back">
+  <div class="backRight"><img src="{% static 'imgs/pap_logo-removebg-preview.png' %}" style="position: absolute;"></div>
+  
+  <div class="backLeft"><img src="{% static 'imgs/pap_logo-removebg-preview.png' %}" style="position: absolute;"></div>
+</div>
+
+<div id="slideBox">
+  <div class="topLayer">
+    <div class="Usuario">
+      <div class="content">
+        <h2>Login Usuário</h2>
+        <form action="" method="post" onsubmit="return false;">
+          <div class="form-group">
+            <input type="text" placeholder="E-mail" name="usuario_user" required/>
+            <input type="password" placeholder="Password" name="usuario_senha" required/>
+          </div>
+          <div class="form-group"></div>
+          <div class="form-group"></div>
+          <div class="form-group"></div>
+        </form>
+        <button id="goLeft" class="off">Empresa</button>
+        <button>Login</button>
+      </div>
+    </div>
+    <div class="empresa">
+      <div class="content">
+        <h2>Login Empresa</h2>
+        {% include 'partials/_alertas.html' %}
+        <form action="{% url 'login' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <input type="email" placeholder="E-mail" name="Empresa_user" required/>
+            <input type="password" placeholder="Password" name="Empresa_senha" required/>
+          </div>
+          <button id="login" style="width: 170px;" type="submit">Login</button>
+          <!-- <button id="goRight" class="off">Usuário</button> -->
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+      <!-- <div id="back">
+          <div class="backLeft"></div>
+      </div>
+
+      <div class="right">
+          <div class="content">
+            <h2>Login</h2>
+            <form method="post">
+              <div class="form-group">
+                <input type="email" placeholder="Username" required/>
+                <input type="password" placeholder="Password"  required/>
+              </div>
+              <a href="" class="from-grupo-link">Esqueceu a senha?</a>
+              <button id="login" type="submit">Login</button> <a href="orquestrador.html"></a>
+            </form>
+          </div>
+        </div> -->
+
+{% endblock %}   

@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- barra de navegação -->
+{% include 'partials/_menu.html' %}
+<!-- barra de navegação -->
+
+<!-- Main  -->
+<main class="container-main mt-4">
+    {% if processos %}
+    <!--Carrosel de processos-->
+    <div class="carrosel ms-5">
+        <!-- Slider main container -->
+        <div class="swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                
+                    {% for processo in processos %}
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <div class="button px-4 text-center" onclick="dadosprocessos('{{ processo.id }}','{{ processo.status }}','{{ processo.area }}','{{ processo.data_publicacao }}','2', '{{ log_do_processo }}')">
+                                <div class="card ">
+                                    <div class="card-header ">
+                                        <a href="{% url 'dados' processo.id %}" style="text-decoration: none; color:rgb(56, 56, 56);">
+                                            <span class="d-inline-block text-truncate" style="max-width: 150px;">
+                                                {{ processo.nome_processo }}
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{processo.empresa}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Slides -->
+                    {% endfor %}
+                
+            </div>
+
+            <!-- If we need navigation buttons -->
+
+            <!-- swiper-buttons -->
+            <div class="d-flex px-4 mt-1">
+                <!-- swiper-button-prev -->
+                <div class="prev-button me-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                    </svg>
+                </div>
+                <!-- swiper-button-prev -->
+
+                <!-- swiper-button-next -->
+                <div class="next-button me-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg>
+                </div>
+                <!-- swiper-button-next -->
+
+            </div>
+            <!-- swiper-buttons -->
+
+        </div>
+        <!-- Slider main container -->
+    </div>
+    <!--Carrosel de processos-->
+
+    
+    <!-- estatisticas do processos -->
+    <div class="container text-center mt-3">
+        <div class="row">
+            <div class="col-12"><h3>Estatisticas dos Processos</h3></div>
+        </div>
+    </div>
+
+    <section class="container estatisticas wrap mt-2">
+
+        <div class="item">
+            <!-- estatistica numeros -->
+            <div class="border tamanho-itens">
+                <h5 class="estatisticas-title mt-2 p-1 align-text-bottom">Estado das Tarefas</h5>
+                <a href="" id="nome_processo_title"></a>
+
+                <hr class="limitador">
+                <div class="container row text-center">
+                    <!-- Graficos -->
+
+                    <!-- Informações graficos -->
+                    <div class="d-flex justify-content-around" hidden>
+                        <p id="quantidade_logs" hidden >{{ dados_grafico.quantidade_logs }}</p>
+                        <p id="em_execucao" hidden>{{ dados_grafico.em_execucao }}</p>
+                        <p id="pendentes" hidden>{{ dados_grafico.pendentes }}</p>
+                        <p id="finalizados" hidden>{{ dados_grafico.finalizados }}</p>
+                    </div>
+                    <!-- Informações graficos -->
+
+                    <!-- Grafico de execução -->
+                    <div id="execucao" class="item" style="width: 300px; height: 300px;"></div>
+                    <!-- Grafico de execução -->
+
+                    <!-- Grafico de finalizado -->
+                    <div id="finalizado" class="item" style="width: 300px; height: 300px;"></div>
+                    <!-- Grafico de finalizado -->
+
+                    <!-- Grafico de pendente -->
+                    <div id="pendente" class="item" style="width: 300px; height: 300px;"></div>
+                    <!-- Grafico de pendente -->
+
+                    
+
+                    <!-- Graficos -->
+                </div>
+
+            </div>
+            
+            <!-- estatistica numeros -->
+        </div>
+
+    </section>
+    <!-- estatisticas do processos -->
+
+    <section class="container estatisticas wrap mt-2">
+         <!-- estatistica tabela -->
+         <div class="item">
+
+            <div class="border">
+                <h5 class="estatisticas-title mt-2 p-1 align-text-bottom">Historico de tarefas</h5>
+
+                <hr class="limitador">
+                {% if log_do_processo %}
+                    <!-- <div class="container-table"> -->
+                        
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nome processo</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Quantidade de itens</th>
+                                    <th scope="col">Número de transações</th>
+                                    <th scope="col">Tempo de execução</th>
+                                </tr>
+                            </thead>
+                            <tbody class="scroll">
+                                {% for lista_logs in log_do_processo %}
+                                    {% for log_processo in lista_logs %}
+                                        {% if log_processo.transaction_status == 'em execucao' %}
+                                            <tr>
+                                                <th scope="row" id="processo_id">{{ log_processo }}</th>
+                                                <td id="processo_status">
+                                                    <!-- <a href="http://127.0.0.1:5500/Project/output/log.html" target="_blank"> -->
+                                                        <p>
+                                                            <span class="col-6">Processando</span>
+                                                        </p>
+                                                    <!-- </a> -->
+                                                </td>
+                                                <td id="processo_transaction_item">
+                                                    <p>
+                                                        <span class=" col-6">0</span>
+                                                    </p>
+                                                </td>
+                                                <td id="processo_transaction_item">
+                                                    <p >
+                                                        <span > 0</span>
+                                                    </p>
+                                                </td>
+                                                <td id="processo_tempo_execucao">
+                                                    <p >
+                                                        <span class="col-6"> 0</span>
+                                                    </p>
+                                                    
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <th scope="row" id="processo_id">{{ log_processo }}</th>
+                                                <td id="processo_status">
+                                                    <!-- <a href="http://127.0.0.1:5500/Project/output/log.html" target="_blank"> -->
+                                                        {{ log_processo.transaction_status }}
+                                                    <!-- </a> -->
+                                                </td>
+                                                <td id="processo_transaction_item">{{ log_processo.transaction_Item }}</td>
+                                                <td id="processo_transaction_item">{{ log_processo.transaction_Number }}</td>
+                                                <td id="processo_tempo_execucao">{{ log_processo.tempo_execucao }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    <!-- </div> -->
+                    {% else %}
+                        <p>Não ha logs na data de hoje</p>
+                    {% endif %}
+                </div>
+        <!-- estatistica tabela -->
+
+    </section>
+    <!-- Tabela de barra -->
+    <div id="graficoColuna"  ></div>
+    <!-- Tabela de barra  -->
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script type="text/javascript">
+
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(Grafico_de_execucao);
+
+        quantidade_logs = parseInt(document.getElementById('quantidade_logs').textContent);
+        em_execucao = parseInt(document.getElementById('em_execucao').textContent);
+        pendentes = parseInt(document.getElementById('pendentes').textContent);
+        finalizados = parseInt(document.getElementById('finalizados').textContent);
+
+        parados = quantidade_logs - em_execucao;
+        pendente_log = quantidade_logs - finalizados
+        console.log(quantidade_logs);
+        console.log(em_execucao);
+        console.log(pendentes);
+        console.log(finalizados);
+
+
+        // em execução
+        function Grafico_de_execucao() {
+          var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['Parado',     parados],
+            ['Em execução',      em_execucao],
+            
+          ]);
+  
+          var options = {
+            title: 'Em execução',
+            pieHole: 0.2,
+          };
+  
+          var chart = new google.visualization.PieChart(document.getElementById('execucao'));
+          chart.draw(data, options);
+        }
+
+        // finalizados
+        google.charts.setOnLoadCallback(Grafico_de_finalizado);
+        
+        function Grafico_de_finalizado() {
+          var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            // ['Em execução', em_execucao],
+            ['processos', quantidade_logs],
+            ['Finalizado', finalizados],
+            
+          ]);
+  
+          var options = {
+            title: 'Finalizados',
+            pieHole: 0.2,
+          };
+  
+          var chart = new google.visualization.PieChart(document.getElementById('finalizado'));
+          chart.draw(data, options);
+        }
+
+        // pendentes
+        google.charts.setOnLoadCallback(Grafico_de_pendentes);
+
+        function Grafico_de_pendentes() {
+          var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['processos', quantidade_logs],
+            ['Pendentes', pendente_log],
+          ]);
+  
+          var options = {
+            title: 'Pendentes',
+            pieHole: 0.2,
+          };
+  
+          var chart = new google.visualization.PieChart(document.getElementById('pendente'));
+          chart.draw(data, options);
+
+          var tabela = google.visualization.arrayToDataTable(
+        [
+            ['Mês','Sucesso','Falha'],
+            ['jan',em_execucao,quantidade_logs],
+            ['fev',1,1],
+            ['mar',3,1],
+            ['abr',3,3],
+            ['mai',3,2],
+            ['jun',1,2],
+            ['jul',3,1],
+            ['ago',0,0],
+            ['set',1,1],
+            ['out',1,2],
+            ['nov',2,2],
+            ['dez',2,1]
+            
+        ]);
+        console.log("teste "+quantidade_logs)
+        var grafico = new google.visualization.ColumnChart(document.getElementById('graficoColuna'));
+        grafico.draw(tabela);
+        }
+        
+        
+     
+       
+    </script>
+
+    {% else %}
+    <!--Não há processos-->
+    <div class="container">
+        <h1 class="" >Ainda não há processos</h1>
+        <p>Espere o Usuário PaP adicionar seus processos</p>
+    </div>
+    <!--Não há processos-->
+    {% endif %}
+</main>
+<!-- Main  -->
+
+
+{% include 'partials/_footer.html' %}
+
+{% endblock %}   
